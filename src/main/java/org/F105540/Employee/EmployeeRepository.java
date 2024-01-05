@@ -10,7 +10,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("SELECT e FROM Employee e " +
             "LEFT JOIN FETCH e.buildings b " +
             "WHERE e.company.id = :companyId " +
-            "GROUP BY e.id " +
+            "GROUP BY e.id, b.id " +
             "ORDER BY COUNT(b) ASC " +
             "LIMIT 1")
     Employee findEmployeeWithLeastBuildingsBelongingToCompany(
@@ -21,7 +21,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             "LEFT JOIN FETCH e.buildings b " +
             "WHERE e.company.id = :companyId " +
             "AND e.id <> :excludedEmployeeId " +
-            "GROUP BY e.id " +
+            "GROUP BY e.id, e, b " +
             "ORDER BY COUNT(b) ASC " +
             "LIMIT 1")
     Employee findEmployeeWithLeastBuildingsBelongingToCompany(
