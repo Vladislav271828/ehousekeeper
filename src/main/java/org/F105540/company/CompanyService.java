@@ -98,6 +98,8 @@ public class CompanyService {
 
       building.setCompany(company);
       building.setEmployee(newEmployee);
+      employee.getBuildings().add(building);
+      employeeRepository.save(employee);
       buildingRepository.save(building);
     });
 
@@ -120,7 +122,10 @@ public class CompanyService {
 
     building.setCompany(company);
     building.setEmployee(employee);
+    employee.getBuildings().add(building);
+    employeeRepository.save(employee);
     buildingRepository.save(building);
+
     return modelMapper.map(companyRepository.findById(companyId)
             .orElseThrow(() -> new EntityNotFoundException("Company", companyId)), DtoCompany.class);
 
