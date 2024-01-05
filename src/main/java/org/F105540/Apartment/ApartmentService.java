@@ -107,7 +107,7 @@ public class ApartmentService {
     public double calculateTaxForApartment(int id){
         Apartment apartment = apartmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Apartment", id));
         double tax = (apartment.getArea() * apartment.getBuilding().getTaxPerArea());
-        tax = tax + residentRepository.findNumberOfResidentsOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
+        tax = tax + residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
         if (apartment.isHasPet()) tax = tax + apartment.getBuilding().getTaxForPet();
         return tax;
     }

@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.F105540.Apartment.Apartment;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,9 +22,8 @@ public class Resident {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "apartment_id")
-    private Apartment apartment;
+    @ManyToMany(mappedBy = "residents", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    private List<Apartment> apartments;
     private String name;
     private int age;
     private boolean usesElevator;

@@ -11,12 +11,13 @@ import java.util.List;
 public interface ResidentRepository extends JpaRepository<Resident, Integer> {
 
     @Transactional
-    @Query("SELECT COUNT(c) FROM Resident c " +
-            "WHERE c.apartment.id = :apartmentId " +
-            "AND (c.age > 7) " +
-            "AND (c.usesElevator = true)")
-    int findNumberOfResidentsOlderThanSevenAndUsingElevator(
-            @Param("apartmentId") Integer Id
+    @Query("SELECT COUNT(r) FROM Resident r " +
+            "JOIN r.apartments a " +
+            "WHERE a.id = :apartmentId " +
+            "AND (r.age > 7) " +
+            "AND (r.usesElevator = true)")
+    int findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(
+            @Param("apartmentId") Integer apartmentId
     );
 
 }
