@@ -32,7 +32,7 @@ public class Building {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
     private List<Apartment> apartments;
 
 

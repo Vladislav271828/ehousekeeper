@@ -22,10 +22,10 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Employee> employees;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
     private List<Building> buildings;
 
 

@@ -30,7 +30,7 @@ public class Employee {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.PERSIST)
     private List<Building> buildings;
 
 
