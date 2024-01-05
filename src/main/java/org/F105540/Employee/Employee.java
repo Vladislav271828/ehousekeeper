@@ -21,7 +21,7 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
@@ -30,7 +30,7 @@ public class Employee {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<Building> buildings;
 
 
@@ -46,7 +46,7 @@ public class Employee {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", companyId=" + company.getId() +
-                ", buildings=" + buildings +
+                ", buildings=" + buildings.size() +
                 ", salaryToBePaid=" + salaryToBePaid +
                 ", salaryPaid=" + salaryPaid +
                 '}';
