@@ -18,7 +18,7 @@ import org.F105540.Apartment.Apartment;
 public class Resident {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "apartment_id")

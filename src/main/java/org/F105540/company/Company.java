@@ -20,7 +20,7 @@ import java.util.List;
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private List<Employee> employees;

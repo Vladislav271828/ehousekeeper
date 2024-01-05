@@ -18,7 +18,7 @@ public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.PERSIST)
     private List<Apartment> apartments;
