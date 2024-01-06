@@ -1,31 +1,32 @@
 package org.F105540.Apartment;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.F105540.Owner.DtoOwner;
 import org.F105540.Owner.Owner;
 import org.F105540.Owner.OwnerRepository;
 import org.F105540.Resident.Resident;
 import org.F105540.Resident.ResidentRepository;
+import org.F105540.company.Company;
+import org.F105540.company.CompanyRepository;
 import org.F105540.exceptions.EntityNotFoundException;
+import org.F105540.exceptions.InvalidInputException;
+import org.F105540.paymentLoogger.PaymentLogger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class ApartmentService {
 
     private final ApartmentRepository apartmentRepository;
     private final ResidentRepository residentRepository;
     private final OwnerRepository ownerRepository;
+    private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
-
-    public ApartmentService(ApartmentRepository apartmentRepository, ResidentRepository residentRepository, OwnerRepository ownerRepository) {
-        this.apartmentRepository = apartmentRepository;
-        this.residentRepository = residentRepository;
-        this.ownerRepository = ownerRepository;
-    }
 
     @Transactional
     public List<DtoApartment> getAllApartments() {
@@ -84,6 +85,8 @@ public class ApartmentService {
         Resident resident = residentRepository.findById(residentId)
                 .orElseThrow(() -> new EntityNotFoundException("Resident", residentId));
         apartment.getResidents().add(resident);
+        resident.getApartments().add(apartment);
+        residentRepository.save(resident);
         return modelMapper.map(apartmentRepository.save(apartment), DtoApartment.class);
     }
 
@@ -104,12 +107,29 @@ public class ApartmentService {
     }
 
     @Transactional
-    public double calculateTaxForApartment(int id){
-        Apartment apartment = apartmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Apartment", id));
+    public double calculateTax(int id){
+        Apartment apartment = apartmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
         double tax = (apartment.getArea() * apartment.getBuilding().getTaxPerArea());
         tax = tax + residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
         if (apartment.isHasPet()) tax = tax + apartment.getBuilding().getTaxForPet();
         return tax;
+    }
+
+    @Transactional
+    public DtoApartment payTax(int id){
+        Apartment apartment = apartmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
+        if (apartment.isTaxIsPaid()) throw new InvalidInputException("Tax is already paid for this apartment");
+        double tax = calculateTax(id);
+        //insert function for transferring money
+        //TODO: write payment
+        apartment.setTaxIsPaid(true);
+        Company company = apartment.getBuilding().getCompany();
+        company.setIncome(company.getIncome() + tax);
+        companyRepository.save(company);
+        PaymentLogger.logPaymentDetails(apartment, tax);
+        return modelMapper.map(apartmentRepository.save(apartment), DtoApartment.class);
     }
 
 
