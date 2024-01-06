@@ -1,18 +1,15 @@
 package org.F105540.Apartment;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.F105540.Building.Building;
-import org.F105540.Employee.Employee;
 import org.F105540.Owner.Owner;
 import org.F105540.Resident.Resident;
 
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Builder
@@ -47,20 +44,6 @@ public class Apartment {
     @Column(name = "has_pet")
     private boolean hasPet;
 
-
-    @Override
-    public String toString() {
-        return "Apartment{" +
-                "id=" + id +
-                ", building id=" + building.getId() +
-                ", owner id=" + owner.getId() +
-                ", residents=" + residents +
-                ", number=" + number +
-                ", floor=" + floor +
-                ", area=" + area +
-                ", hasPet=" + hasPet +
-                '}';
-    }
 }
 
 

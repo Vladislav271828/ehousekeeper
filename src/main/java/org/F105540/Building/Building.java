@@ -28,9 +28,6 @@ public class Building {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
     private List<Apartment> apartments;

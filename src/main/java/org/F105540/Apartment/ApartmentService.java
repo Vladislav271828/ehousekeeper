@@ -2,7 +2,6 @@ package org.F105540.Apartment;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.F105540.Owner.DtoOwner;
 import org.F105540.Owner.Owner;
 import org.F105540.Owner.OwnerRepository;
 import org.F105540.Resident.Resident;
@@ -125,7 +124,7 @@ public class ApartmentService {
         //insert function for transferring money
         //TODO: write payment
         apartment.setTaxIsPaid(true);
-        Company company = apartment.getBuilding().getCompany();
+        Company company = apartment.getBuilding().getEmployee().getCompany();
         company.setIncome(company.getIncome() + tax);
         companyRepository.save(company);
         PaymentLogger.logPaymentDetails(apartment, tax);

@@ -45,7 +45,6 @@ public class DtoBuilding {
         return "DtoBuilding{" +
                 "id=" + id +
                 ", employee=" + employee+
-                //", company=" + company.getId() +
                 ", apartments=" + apartments +
                 ", address='" + address + '\'' +
                 ", numberOfFloors=" + numberOfFloors +

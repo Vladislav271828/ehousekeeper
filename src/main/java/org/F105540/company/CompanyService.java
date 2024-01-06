@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CompanyService {
@@ -64,7 +65,7 @@ public class CompanyService {
     Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
 
-    if (employee.getCompany() != null && employee.getCompany().getId() != company.getId()) throw new RuntimeException("Employee already works for another company. Please remove them from the company first");
+    if (employee.getCompany() != null && !employee.getCompany().getId().equals(company.getId())) throw new RuntimeException("Employee already works for another company. Please remove them from the company first");
     if ((employee.getCompany() != null ? employee.getCompany().getId() : 0) == company.getId()) throw new RuntimeException("Employee already works for this company");
 
     employee.setCompany(company);
@@ -83,19 +84,11 @@ public class CompanyService {
     Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
 
-    if (employee.getCompany() == null || employee.getCompany().getId() != company.getId()) throw new InvalidInputException("Employee does not work for this company");
-
-    //employee.setCompany(null);
-    //employeeRepository.save(employee);
-    System.out.println(employee + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    if (employee.getCompany() == null || !Objects.equals(employee.getCompany().getId(), company.getId())) throw new InvalidInputException("Employee does not work for this company");
 
     employee.getBuildings().forEach(building -> {
-
       Employee newEmployee = employeeRepository.findEmployeeWithLeastBuildingsBelongingToCompany(companyId, employeeId);
       if (newEmployee == null) throw new RuntimeException("The company doesn't have any free employees :(");
-      System.out.println(newEmployee + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-      building.setCompany(company);
       building.setEmployee(newEmployee);
       employee.getBuildings().add(building);
       company.getEmployees().remove(employee);
@@ -114,22 +107,24 @@ public class CompanyService {
     Building building = buildingRepository.findById(buildingId)
             .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
 
-    if (building.getCompany() != null && building.getCompany().getId() != company.getId()) throw new InvalidInputException("Building already belongs to another company. Please remove it from the company first");
-    if ((building.getCompany() != null ? building.getCompany().getId() : 0) == company.getId()) throw new InvalidInputException("Building already belongs to this company");
+    if (building.getEmployee() == null) {
 
-    Employee employee = employeeRepository.findEmployeeWithLeastBuildingsBelongingToCompany(companyId);
-    if (employee == null) throw new RuntimeException("The company doesn't have any free employees :(");
+      Employee employee = employeeRepository.findEmployeeWithLeastBuildingsBelongingToCompany(companyId);
+      if (employee == null) throw new RuntimeException("The company doesn't have any free employees :(");
 
-    building.setCompany(company);
-    building.setEmployee(employee);
-    employee.getBuildings().add(building);
-    company.getBuildings().add(building);
+      building.setEmployee(employee);
+      employee.getBuildings().add(building);
+//TODO NO NEED TO RETURN COMPANY I THINK IDK
+      employeeRepository.save(employee);
+      buildingRepository.save(building);
 
-    employeeRepository.save(employee);
-    buildingRepository.save(building);
+      return modelMapper.map(companyRepository.save(company), DtoCompany.class);
+    }
 
-    return modelMapper.map(companyRepository.save(company), DtoCompany.class);
-
+    else {
+      if (!building.getEmployee().getCompany().getId().equals(company.getId())) throw new InvalidInputException("Building already belongs to another company. Please remove it from the company first");
+      else throw new InvalidInputException("Building already belongs to this company");
+    }
   }
 
 
@@ -139,13 +134,11 @@ public class CompanyService {
             .orElseThrow(() -> new EntityNotFoundException("Company", companyId));
     Building building = buildingRepository.findById(buildingId)
             .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
-    if (building.getCompany() == null || building.getCompany().getId() != company.getId()) throw new InvalidInputException("Building is not assigned to this company");
+    if (building.getEmployee().getCompany() == null || !Objects.equals(building.getEmployee().getCompany().getId(), company.getId())) throw new InvalidInputException("Building is not assigned to this company");
 
     Employee employee = building.getEmployee();
 
-    company.getBuildings().remove(building);
     employee.getBuildings().remove(building);
-    building.setCompany(null);
     building.setEmployee(null);
 
 
@@ -162,8 +155,8 @@ public class CompanyService {
             .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
     Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
-    if (building.getCompany() == null || building.getCompany().getId() != employee.getCompany().getId()) throw new InvalidInputException("Building is not assigned to this company");
-    if (building.getEmployee().getId() == employee.getId()) throw new InvalidInputException("This building is already assigned to this employee");
+    if (building.getEmployee().getCompany() == null || !Objects.equals(building.getEmployee().getCompany().getId(), employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
+    if (Objects.equals(building.getEmployee().getId(), employee.getId())) throw new InvalidInputException("This building is already assigned to this employee");
 
     building.setEmployee(employee);
     employee.getBuildings().add(building);
@@ -181,7 +174,7 @@ public class CompanyService {
     Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
 
-    if (building.getCompany() == null || !building.getCompany().getId().equals(employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
+    if (building.getEmployee().getCompany() == null || !building.getEmployee().getCompany().getId().equals(employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
     if(!building.getEmployee().getId().equals(employee.getId())) throw new InvalidInputException("This building is assigned to employee with id " + building.getEmployee().getId());
     building.setEmployee(null);
     employee.getBuildings().remove(building);
