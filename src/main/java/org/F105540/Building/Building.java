@@ -36,7 +36,7 @@ public class Building {
     private List<Apartment> apartments;
 
 
-
+//TODO make number of apartments increment when one is added
 
     @Column(name = "address")
     private String address;
@@ -45,7 +45,7 @@ public class Building {
     @Column(name = "num_of_apartments")
     private int numberOfApartments;
     @Column(name = "area")
-    private int area;
+    private double area;
     @Column(name = "expenses")
     private double expenses;
     @Column(name = "expenses_paid")

@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DtoBuilding {
 
-    int id;
+    Integer id;
     private DtoEmployee employee;
     private DtoCompany company;
     private List<DtoApartment> apartments;
@@ -29,7 +29,7 @@ public class DtoBuilding {
     @Min(value = 0, message = "Number of apartments cannot be negative")
     private int numberOfApartments;
     @Min(value = 0, message = "Area cannot be negative")
-    private int area;
+    private double area;
     private double expenses;
     private double expensesPaid;
     @Min(value = 0, message = "Tax per area cannot be negative")
@@ -44,8 +44,8 @@ public class DtoBuilding {
     public String toString() {
         return "DtoBuilding{" +
                 "id=" + id +
-                ", employeeId=" + employee.getId()+
-                ", companyId=" + company.getId() +
+                ", employee=" + employee+
+                //", company=" + company.getId() +
                 ", apartments=" + apartments +
                 ", address='" + address + '\'' +
                 ", numberOfFloors=" + numberOfFloors +

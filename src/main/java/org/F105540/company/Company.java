@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.F105540.Apartment.Apartment;
 import org.F105540.Building.Building;
 import org.F105540.Employee.Employee;
 
@@ -33,12 +32,12 @@ public class Company {
     private String name;
 
     @Column(name = "income")
-    private int income;
+    private double income;
 
     @Column(name = "expenses_to_pay")
-    private int expenses;
+    private double expenses;
 
     @Column(name = "expenses_paid")
-    private int expensesPaid;
+    private double expensesPaid;
 
 }

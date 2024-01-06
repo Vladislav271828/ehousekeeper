@@ -44,8 +44,29 @@ public class EmployeeService {
     modelMapper.map(employee, employeeToEdit);
 
     Employee updatedEmployee = employeeRepository.save(employeeToEdit);
+//    if (employee.getCompany() != null){
+//      employee.getCompany().get
+//    }
+    //TODO CHECK IF THE EMPLOYEE GETS UPDATED IN THE COMPANY OR I NEED TO SAVE IT EVERYWHERE
 
     return modelMapper.map(updatedEmployee, DtoEmployee.class);
+  }
+
+  @Transactional
+  public List<DtoEmployee> getAllByName(String name){
+    return employeeRepository.findAllByName(name).stream()
+            .map(employee -> modelMapper.map(employee, DtoEmployee.class))
+            .toList();
+  }
+
+  @Transactional
+  public List<DtoEmployee> getEmployeesWithBuildingsMoreOrLessThanOfCompany(boolean moreThen, int buildings, int companyId){
+    if(moreThen) return employeeRepository.findEmployeesWithMoreBuildingsThan(buildings, companyId).stream()
+            .map(employee -> modelMapper.map(employee, DtoEmployee.class))
+            .toList();
+    else return employeeRepository.findEmployeesWithLessBuildingsThan(buildings, companyId).stream()
+            .map(employee -> modelMapper.map(employee, DtoEmployee.class))
+            .toList();
   }
 
   @Transactional

@@ -1,6 +1,7 @@
 package org.F105540.Resident;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.F105540.exceptions.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -8,15 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ResidentService {
 
     private final ResidentRepository residentRepository;
     private final ModelMapper modelMapper = new ModelMapper();
-
-
-    public ResidentService(ResidentRepository residentRepository) {
-        this.residentRepository = residentRepository;
-    }
 
     @Transactional
     public List<DtoResident> getAllResidents() {
@@ -29,7 +26,7 @@ public class ResidentService {
     public DtoResident getResidentById(int id) {
         return modelMapper.map(residentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Resident", id)), DtoResident.class);
-        }
+    }
 
     @Transactional
     public DtoResident createResident(DtoResident resident) {
@@ -43,11 +40,28 @@ public class ResidentService {
                 .orElseThrow(() -> new EntityNotFoundException("Resident", id));
 
         modelMapper.map(resident, existingResident);
-        
+
         Resident updatedResident = residentRepository.save(existingResident);
 
         return modelMapper.map(updatedResident, DtoResident.class);
-        }
+    }
+
+    @Transactional
+    public List<DtoResident> getResidentsByNameAndBuilding(String name, int buildingId){
+        return residentRepository.findResidentsInBuildingIdAndName(buildingId, name).stream()
+                .map(resident -> modelMapper.map(resident, DtoResident.class))
+                .toList();
+    }
+
+    @Transactional
+    public List<DtoResident> getResidentsOlderOrYoungerThanInBuilding(boolean Older, int age, int buildingId){
+        if(Older) return residentRepository.findResidentsInBuildingOlderThan(age, buildingId).stream()
+                .map(resident -> modelMapper.map(resident, DtoResident.class))
+                .toList();
+        else return residentRepository.findResidentsInBuildingYoungerThan(age, buildingId).stream()
+                .map(resident -> modelMapper.map(resident, DtoResident.class))
+                .toList();
+    }
 
 
     @Transactional
@@ -57,6 +71,5 @@ public class ResidentService {
         residentRepository.deleteById(id);
     }
 
-  
 
 }

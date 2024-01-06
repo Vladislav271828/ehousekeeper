@@ -41,7 +41,9 @@ public class Apartment {
 
     private Integer number;
     private Integer floor;
-    private int area;
+    private double area;
+    @Column(name = "tax_is_paid")
+    private boolean taxIsPaid;
     @Column(name = "has_pet")
     private boolean hasPet;
 

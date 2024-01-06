@@ -28,8 +28,10 @@ public class DtoApartment {
     private Integer number;
     private Integer floor;
     @Min(value = 0, message = "Area cannot be negative")
-    private Integer area;
-    private Boolean hasPet;
+    private double area;
+    private boolean taxIsPaid;
+    private boolean hasPet;
+
 
     @Override
     public String toString() {
@@ -41,7 +43,9 @@ public class DtoApartment {
                 ", number=" + number +
                 ", floor=" + floor +
                 ", area=" + area +
+                ", taxIsPaid=" + taxIsPaid +
                 ", hasPet=" + hasPet +
                 '}';
     }
+
 }

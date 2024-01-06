@@ -8,16 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.F105540.Apartment.Apartment;
 import org.F105540.Apartment.DtoApartment;
+
+import java.util.List;
 
 @Data
 
 @NoArgsConstructor
 public class DtoResident {
 
-    private int id;
-    private DtoApartment apartment;
+    private Integer id;
+    private List<DtoApartment> apartments;
     private String name;
     @Min(value = 0, message = "Age cannot be negative")
     private int age;
@@ -27,5 +28,17 @@ public class DtoResident {
         this.name = name;
         this.age = age;
         this.usesElevator = usesElevator;
+    }
+
+
+    @Override
+    public String toString() {
+        return "DtoResident{" +
+                "id=" + id +
+                //", apartments=" + apartments +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", usesElevator=" + usesElevator +
+                '}';
     }
 }

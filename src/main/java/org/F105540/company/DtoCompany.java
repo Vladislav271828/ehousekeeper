@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.F105540.Building.Building;
 import org.F105540.Building.DtoBuilding;
 import org.F105540.Employee.DtoEmployee;
-import org.F105540.Employee.Employee;
 
 import java.util.List;
 @Data
@@ -16,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DtoCompany {
 
-    private int id;
+    private Integer id;
 
     private String name;
 

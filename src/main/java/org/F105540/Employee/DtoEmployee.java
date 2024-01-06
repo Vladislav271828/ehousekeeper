@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.F105540.Building.Building;
 import org.F105540.Building.DtoBuilding;
-import org.F105540.company.Company;
 import org.F105540.company.DtoCompany;
 
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DtoEmployee {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
@@ -34,8 +32,8 @@ public class DtoEmployee {
         return "DtoEmployee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", company id=" + company.getId() +
-                ", buildings=" + buildings +
+                //", company id=" + company.getId() +
+                ", buildings=" + buildings.size() +
                 ", salaryToBePaid=" + salaryToBePaid +
                 ", salaryPaid=" + salaryPaid +
                 '}';

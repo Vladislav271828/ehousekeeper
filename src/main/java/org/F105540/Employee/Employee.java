@@ -34,10 +34,10 @@ public class Employee {
     private List<Building> buildings;
 
 
-    @Column(name = "salary_to_be_paid")
+    @Column(name = "expenses")
     private int salaryToBePaid;
 
-    @Column(name = "salary_paid")
+    @Column(name = "expenses_paid")
     private int salaryPaid;
 
     @Override
