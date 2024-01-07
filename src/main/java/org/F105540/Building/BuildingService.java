@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 @Service
 public class BuildingService {
 
@@ -37,39 +39,24 @@ public class BuildingService {
 
   @Transactional
   public DtoBuilding createBuilding(DtoBuilding building) {
+    building.setApartments(emptyList());
+    building.setEmployee(null);
     return  modelMapper.map(buildingRepository.save(modelMapper.map(building, Building.class)), DtoBuilding.class);
   }
 
   @Transactional
   public DtoBuilding editBuilding(Integer buildingId, DtoBuilding building){
+    building.setApartments(null);
+    building.setEmployee(null);
     modelMapper.getConfiguration().setSkipNullEnabled(true);
     Building existingBuilding = buildingRepository.findById(buildingId)
             .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
 
     modelMapper.map(building, existingBuilding);
 
-    Building updatedBuilding = buildingRepository.save(existingBuilding);
-
-    return modelMapper.map(updatedBuilding, DtoBuilding.class);
+    return modelMapper.map(buildingRepository.save(existingBuilding), DtoBuilding.class);
   }
 
-  @Transactional
-  public DtoApartment addApartmentToBuilding(DtoApartment apartment, Integer buildingId, Integer floor) {
-    Building building = buildingRepository.findById(buildingId)
-            .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
-    if (floor > building.getNumberOfFloors()) {
-        throw new IllegalArgumentException("floor number can't be bigger than " + building.getNumberOfFloors());
-    }
-    Apartment newApartment = modelMapper.map(apartment, Apartment.class);
-    newApartment.setFloor(floor);
-    newApartment.setBuilding(building);
-    apartmentRepository.save(newApartment);
-    Apartment savedApartment = building.getApartments().stream()
-            .filter(ap -> ap.getId().equals(newApartment.getId()))
-            .findFirst()
-            .orElse(null);
-    return modelMapper.map(savedApartment, DtoApartment.class);
-  }
 
   @Transactional
   public void deleteBuilding(int id) {

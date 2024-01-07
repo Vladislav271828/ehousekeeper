@@ -16,16 +16,24 @@ public class DtoCompany {
 
     private Integer id;
 
-    private String name;
-
-    private List<DtoBuilding> buildings;
+    private String name = null;
 
     private List<DtoEmployee> employees;
 
-    private int income;
+    private Double income = null;
 
-    private int expenses;
+    private Double expenses = null;
 
-    private int expensesPaid;
+    private Double expensesPaid = null;
 
+    @Override
+    public String toString() {
+        return "DtoCompany{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", income=" + income +
+                ", expenses=" + expenses +
+                ", expensesPaid=" + expensesPaid +
+                '}';
+    }
 }

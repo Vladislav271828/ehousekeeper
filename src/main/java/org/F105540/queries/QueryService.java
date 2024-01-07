@@ -10,6 +10,7 @@ import org.F105540.Employee.Employee;
 import org.F105540.Employee.EmployeeRepository;
 import org.F105540.Resident.DtoResident;
 import org.F105540.Resident.ResidentRepository;
+import org.F105540.company.CompanyRepository;
 import org.F105540.exceptions.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class QueryService {
     private EmployeeRepository employeeRepository;
     private ApartmentRepository apartmentRepository;
     private ResidentRepository residentRepository;
+    private CompanyRepository companyRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
 
@@ -74,7 +76,6 @@ public class QueryService {
                 .map(res -> modelMapper.map(res, DtoResident.class))
                 .toList();
     }
-
 
 
 

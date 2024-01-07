@@ -7,6 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static java.util.Collections.emptyList;
+
 @Service
 public class OwnerService {
 
@@ -34,11 +37,13 @@ public class OwnerService {
 
   @Transactional
   public DtoOwner createOwner(DtoOwner owner) {
+    owner.setApartments(emptyList());
     return modelMapper.map(ownerRepository.save(modelMapper.map(owner, Owner.class)), DtoOwner.class);
   }
 
   @Transactional
   public DtoOwner editOwner(int id, DtoOwner owner) {
+    owner.setApartments(null);
     modelMapper.getConfiguration().setSkipNullEnabled(true);
     Owner existingOwner = ownerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Owner", id));
 

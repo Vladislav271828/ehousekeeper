@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.F105540.Apartment.Apartment;
 import org.F105540.Employee.Employee;
-import org.F105540.company.Company;
 
 import java.util.List;
 
@@ -33,25 +32,29 @@ public class Building {
     private List<Apartment> apartments;
 
 
-//TODO make number of apartments increment when one is added
-
     @Column(name = "address")
     private String address;
     @Column(name = "num_of_floors")
-    private int numberOfFloors;
+    @Min(value = 0, message = "Number of floors cannot be negative")
+    private Integer numberOfFloors;
     @Column(name = "num_of_apartments")
-    private int numberOfApartments;
+    @Min(value = 0, message = "Number of apartments cannot be negative")
+    private Integer numberOfApartments;
     @Column(name = "area")
+    @Min(value = 0, message = "Area cannot be negative")
     private double area;
     @Column(name = "expenses")
     private double expenses;
     @Column(name = "expenses_paid")
     private double expensesPaid;
     @Column(name = "tax_per_area")
+    @Min(value = 0, message = "Tax per area cannot be negative")
     private double taxPerArea;
     @Column(name = "tax_per_elevator_person")
+    @Min(value = 0, message = "Tax per elevator person cannot be negative")
     private double taxPerElevatorPerson;
     @Column(name = "tax_for_pet")
+    @Min(value = 0, message = "Tax per pet cannot be negative")
     private double taxForPet;
     @Column(name = "common_parts")
     private String commonParts;

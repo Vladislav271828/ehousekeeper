@@ -24,22 +24,19 @@ public class DtoApartment {
     private DtoBuilding building;
     private DtoOwner owner;
     private List<DtoResident> residents;
-    @Min(value = 0, message = "Apartment number cannot be negative")
-    private Integer number;
-    private Integer floor;
-    @Min(value = 0, message = "Area cannot be negative")
-    private double area;
-    private boolean taxIsPaid;
-    private boolean hasPet;
+    private Integer number = null;
+    private Integer floor = null;
+    private Double area = null;
+    private Boolean taxIsPaid = null;
+    private Boolean hasPet = null;
 
 
     @Override
     public String toString() {
         return "DtoApartment{" +
                 "id=" + id +
-                ", building id=" + building.getId() +
-                ", owner id=" + owner.getId() +
-                ", residents=" + residents +
+                ", building=" + building +
+                ", owner=" + owner +
                 ", number=" + number +
                 ", floor=" + floor +
                 ", area=" + area +

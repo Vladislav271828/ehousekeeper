@@ -13,22 +13,17 @@ import org.F105540.Apartment.DtoApartment;
 import java.util.List;
 
 @Data
-
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class DtoResident {
 
     private Integer id;
     private List<DtoApartment> apartments;
-    private String name;
-    @Min(value = 0, message = "Age cannot be negative")
-    private int age;
-    private boolean usesElevator;
-    @Builder
-    public DtoResident(String name, int age, boolean usesElevator) {
-        this.name = name;
-        this.age = age;
-        this.usesElevator = usesElevator;
-    }
+    private String name = null;
+    private Integer age = null;
+    private Boolean usesElevator = null;
+
 
 
     @Override

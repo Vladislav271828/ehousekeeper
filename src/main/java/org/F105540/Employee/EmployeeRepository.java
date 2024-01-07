@@ -1,6 +1,7 @@
 package org.F105540.Employee;
 
 import org.F105540.Resident.Resident;
+import org.F105540.company.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,7 +34,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             @Param("excludedEmployeeId") int excludedEmployeeId
     );
 
-    List<Employee> findAllByName(String name);
+    List<Employee> findAllByNameAndCompany(String name, Company company);
 
     @Query("SELECT e FROM Employee e " +
             "WHERE SIZE(e.buildings) > :threshold " +
@@ -43,10 +44,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             @Param("threshold") int threshold,
             @Param("companyId") int companyId);
 
-    @Query("SELECT e FROM Employee e WHERE SIZE(e.buildings) < :threshold " +
+    @Query("SELECT e FROM Employee e " +
+            "WHERE SIZE(e.buildings) < :threshold " +
             "AND e.company.id = :companyId " +
             "ORDER BY SIZE(e.buildings) DESC")
     List<Employee> findEmployeesWithLessBuildingsThan(
             @Param("threshold") int threshold,
             @Param("companyId") int companyId);
 }
+
+

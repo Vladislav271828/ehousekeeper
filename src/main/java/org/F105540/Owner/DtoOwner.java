@@ -1,16 +1,13 @@
 package org.F105540.Owner;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.F105540.Apartment.Apartment;
 import org.F105540.Apartment.DtoApartment;
 
 import java.util.List;
 
 @Data
-
 
 @NoArgsConstructor
 public class DtoOwner {
@@ -19,7 +16,7 @@ public class DtoOwner {
 
     private List<DtoApartment> apartments;
 
-    private String name;
+    private String name = null;
 
     @Builder
     public DtoOwner(String name) {

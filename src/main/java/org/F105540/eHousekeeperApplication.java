@@ -9,6 +9,7 @@ import org.F105540.Employee.EmployeeService;
 import org.F105540.Owner.DtoOwner;
 import org.F105540.Owner.OwnerService;
 import org.F105540.Resident.DtoResident;
+import org.F105540.Resident.ResidentRepository;
 import org.F105540.Resident.ResidentService;
 import org.F105540.company.CompanyService;
 import org.F105540.company.DtoCompany;
@@ -17,7 +18,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
 @SpringBootApplication
 public class eHousekeeperApplication {
     public static void main(String[] args) {
@@ -28,79 +28,103 @@ public class eHousekeeperApplication {
     public CommandLineRunner demo(ApartmentService apartmentService, BuildingService buildingService, OwnerService ownerService, ResidentService residentService, CompanyService companyService, EmployeeService employeeService, QueryService queryService) {
         return args -> {
 
-            DtoBuilding building = DtoBuilding.builder().address("adr").numberOfFloors(21).taxForPet(1).taxPerArea(10).taxPerElevatorPerson(100).build();
-            building = buildingService.createBuilding(building);
-            DtoApartment apartment = buildingService.addApartmentToBuilding(DtoApartment.builder().area(1).hasPet(true).build(), building.getId(), 2);
-            DtoOwner owner = ownerService.createOwner(DtoOwner.builder().name("Ivan").build());
-            apartment = apartmentService.addOwnerToApartment(owner.getId(), apartment.getId());
-            DtoResident resident = new DtoResident("Ivan", -21, true);
-            resident = residentService.createResident(resident);
-            apartment = apartmentService.addResidentToApartment(resident.getId(), apartment.getId());
-            //System.out.println(apartment);
-            //System.out.println(residentService.getResidentById(1).getApartments());
-            //apartmentService.removeResidentFromApartment(1, 1);
-            System.out.println(residentService.getResidentById(1).getApartments());
-//            //apartment = apartmentService.removeResidentFromApartment(resident.getId(), apartment.getId());
+            System.out.println("Създаване на служители");
+
             DtoEmployee employee = DtoEmployee.builder().name("Dragan").build();
             DtoEmployee employee2 = DtoEmployee.builder().name("Petkan").build();
+            DtoEmployee employee3 = DtoEmployee.builder().name("Ivan").company(DtoCompany.builder().name("Kompaniq 2 BABYYY").build()).build();
+
             employee = employeeService.createEmployee(employee);
             employee2 = employeeService.createEmployee(employee2);
+            employee3 = employeeService.createEmployee(employee3);
+
+            System.out.println("Създаване на компания");
+
             DtoCompany company = DtoCompany.builder().name("Kompaniq").build();
             company = companyService.createCompany(company);
-            company = companyService.addEmployeeToCompany(employee.getId(), company.getId());
-            company = companyService.addEmployeeToCompany(employee2.getId(), company.getId());
-            //company = companyService.removeEmployeeFromCompany(employee.getId(), company.getId());
-            company = companyService.addBuildingToCompany(building.getId(), company.getId());
-            employee = employeeService.getEmployeeById(employee.getId());
-            employee2 = employeeService.getEmployeeById(employee2.getId());
-            System.out.println(employee.getBuildings());
-            System.out.println(employee2.getBuildings());
-            System.out.println(company.getBuildings());
-            apartmentService.payTax(1);
-            companyService.createCompany(DtoCompany.builder().name("Kompaniq").income(200).build());
-            //System.out.println(employeeService.getEmployeesWithBuildingsMoreOrLessThanOfCompany(true, 1, 1));
-            //System.out.println(residentService.getResidentsByNameAndBuilding("Ivan", 2));
-            System.out.println(residentService.getResidentsOlderOrYoungerThanInBuilding(false, 2, 1));
-            System.out.println(queryService.getNumberOfBuildingsOfEmployee(1));
-            System.out.println(queryService.getNumberOfApartmentsInBuilding(1));
-            System.out.println(queryService.getNumberOfResidentsInBuilding(1));
+            DtoCompany company2 = DtoCompany.builder().name("Kompaniq dwe").build();
+            company2 = companyService.createCompany(company);
+            employee = employeeService.addEmployeeToCompany(employee.getId(), company.getId());
+            employee2 = employeeService.addEmployeeToCompany(employee2.getId(), company.getId());
+            employee3 = employeeService.addEmployeeToCompany(employee3.getId(), company.getId());
 
+            System.out.println("Създаване на сгради, апартаменти и собственик");
 
-//            companyService.removeBuildingFromCompany(building.getId(), company.getId());
-//            building = companyService.revokeBuildingFromEmployee(building.getId(), employee.getId());
-//            System.out.println(company.getBuildings().get(0));
-//            System.out.println(employee2.getBuildings());
-//            company = companyService.removeEmployeeFromCompany(employee2.getId(), company.getId());
-//            System.out.println(company.getBuildings().get(0));
+            DtoBuilding building = buildingService.createBuilding(DtoBuilding.builder().address("ulitsa nomer edno").numberOfFloors(21).taxForPet(10.0).taxPerArea(1.0).taxPerElevatorPerson(100.0).build());
+            DtoBuilding building2 = buildingService.createBuilding(DtoBuilding.builder().address("ulitsa nomer dwe").numberOfFloors(99).taxForPet(2.0).taxPerArea(3.0).taxPerElevatorPerson(5.0).build());
+            DtoApartment apartment = apartmentService.createApartmentInBuilding(DtoApartment.builder().area(1000.0).hasPet(true).number(1).build(), building.getId());
+            DtoApartment apartment2 = apartmentService.createApartmentInBuilding(DtoApartment.builder().area(10000.0).hasPet(false).number(2).build(), building.getId());
+            DtoApartment apartment3 = apartmentService.createApartmentInBuilding(DtoApartment.builder().area(100000.0).hasPet(false).number(1).build(), building2.getId());
 
+            DtoOwner owner = ownerService.createOwner(DtoOwner.builder().name("Maria").build());
+            DtoOwner owner2 = ownerService.createOwner(DtoOwner.builder().name("Maggy").build());
 
+            apartment = apartmentService.addOwnerToApartment(owner.getId(), apartment.getId());
+            apartment2 = apartmentService.addOwnerToApartment(owner.getId(), apartment2.getId());
+            apartment3 = apartmentService.addOwnerToApartment(owner2.getId(), apartment3.getId());
 
+            System.out.println("Добавяне на сградите към компанията");
 
+            companyService.addBuildingToCompany(building.getId(), company.getId());
+            companyService.addBuildingToCompany(building2.getId(), company.getId());
 
+            System.out.println("Създаване на жители и добавяне към апартаментите");
 
+            DtoResident resident = new DtoResident(null, null, "Johan", 21, true);
+            DtoResident resident2 = new DtoResident(null, null, "Johny", 2, true);
+            DtoResident resident3 = new DtoResident(null, null, "Jonathan", 31, false);
+            DtoResident resident4 = new DtoResident(null, null, "Joseph", 60, true);
+            resident = residentService.createResident(resident);
+            resident2 = residentService.createResident(resident2);
+            resident3 = residentService.createResident(resident3);
+            resident4 = residentService.createResident(resident4);
 
+            apartment = apartmentService.addResidentToApartment(resident.getId(), apartment.getId());
+            apartment = apartmentService.addResidentToApartment(resident2.getId(), apartment.getId());
+            apartment2 = apartmentService.addResidentToApartment(resident3.getId(), apartment2.getId());
+            apartment3 = apartmentService.addResidentToApartment(resident3.getId(), apartment3.getId());
+            apartment3 = apartmentService.addResidentToApartment(resident4.getId(), apartment3.getId());
 
-//            // Create a new apartment
-//            DtoApartment newApartment = DtoApartment.builder()
-//                    .hasPet(true)
-//                    .number(33)
-//                    // Set apartment properties here
-//                    .build();
-//            //DtoApartment newApartment = new DtoApartment(null, null, null, null, null, null, null, null);
-//            DtoApartment newApartment2 = new DtoApartment(null, null, null, null, 1, 1, 1, null);
-//            // Save the new apartment
-//            ////////DtoApartment savedApartment = apartmentService.createApartment(newApartment);
-//            //System.out.println("Saved Apartment: " + savedApartment);
+            System.out.println("редактиране на компания, служител, сграда, апартамент, живущ и собственик (точки 1, 2, 3, 4)");
+            System.out.println("Също така въвеждане на такса в сградата (нищо че сме го направили по време на инициализация) (точка 6)");
+
+            company = companyService.editCompany(company.getId(), DtoCompany.builder().name("Novo ime na kompaniq").build());
+            employee = employeeService.editEmployee(employee.getId(), DtoEmployee.builder().name("Novo ime na slujitel").build());
+            building = buildingService.editBuilding(building.getId(), DtoBuilding.builder().address("Nov adress").taxPerArea(1.0).taxForPet(1.0).taxPerElevatorPerson(1.0).build());
+            apartment = apartmentService.editApartment(apartment.getId(), DtoApartment.builder().number(33).build());
+            resident = residentService.editResident(resident.getId(), DtoResident.builder().name("Novo ime na jitel").build());
+            owner = ownerService.editOwner(owner.getId(), DtoOwner.builder().name("Novo ime na sobstvenik").build());
+
+            System.out.println("смяна на служител на сградата (точка 5)");
+
+            building = companyService.assignBuildingToEmployee(building.getId(), employee2.getId());
+
+            System.out.println("плащане на таксите на всички апартаменти (точка 7, 10)");
+
+            apartment = apartmentService.payTax(apartment.getId());
+            apartment2 = apartmentService.payTax(apartment2.getId());
+            apartment3 = apartmentService.payTax(apartment3.getId());
+
+            System.out.println("филтриране и сортиране на компании, служители, жители в сграда(точка 8)");
+
+            companyService.getAllByOrderByIncomeDesc();
+
+            System.out.println(employeeService.getAllByName("Ivan", company.getId()));
+            System.out.println(employeeService.getEmployeesWithBuildingsMoreOrLessThanOfCompany(true, 1, company.getId()));
+
+            System.out.println(residentService.getResidentsByNameAndBuilding("Johny", building.getId()));
+            System.out.println(residentService.getResidentsOlderOrYoungerThanInBuilding(true, 0, 0));
+            //THIS DOESNT WORK!?!??!?!qqw
+//            System.out.println("обобщени и подробни справки (точка 9)");
 //
-//            //savedApartment = apartmentService.editApartment(1, newApartment);
-//            //savedApartment = apartmentService.editApartment(1, newApartment);
-//            ////////savedApartment = apartmentService.editApartment(1, newApartment2);
-//            //System.out.println("Saved Apartment: " + savedApartment);
-//            System.out.println(apartmentService.getApartmentById(1));
-//            System.out.println(apartmentService.getAllApartments());
-//            //apartmentService.deleteApartment(22);
-//            apartmentService.deleteApartment(1);
-
+//            System.out.println(queryService.getNumberOfBuildingsOfEmployee(employee2.getId()));
+//            System.out.println(queryService.getListOfBuildingsOfEmployee(employee2.getId()));
+//
+//            System.out.println(queryService.getNumberOfApartmentsInBuilding(building.getId()));
+//            System.out.println(queryService.getListOfApartmentsInBuilding(building.getId()));
+//
+//            System.out.println(queryService.getNumberOfResidentsInBuilding(building.getId()));
+//            System.out.println(queryService.getListOfResidentsInBuilding(building.getId()));
 
 
         };

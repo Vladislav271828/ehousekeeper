@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.F105540.Building.Building;
 import org.F105540.Building.BuildingRepository;
 import org.F105540.Building.DtoBuilding;
+import org.F105540.Employee.DtoEmployee;
 import org.F105540.Employee.Employee;
 import org.F105540.Employee.EmployeeRepository;
 import org.F105540.exceptions.EntityNotFoundException;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Collections.emptyList;
 
 @Service
 public class CompanyService {
@@ -43,11 +46,13 @@ public class CompanyService {
 
   @Transactional
   public DtoCompany createCompany(DtoCompany company) {
+    company.setEmployees(emptyList());
     return modelMapper.map(companyRepository.save(modelMapper.map(company, Company.class)), DtoCompany.class);
   }
 
   @Transactional
-  public DtoCompany editCompany(int id, Company company) {
+  public DtoCompany editCompany(int id, DtoCompany company) {
+    company.setEmployees(null);
     modelMapper.getConfiguration().setSkipNullEnabled(true);
     Company companyToEdit = companyRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Company", id));
@@ -55,49 +60,6 @@ public class CompanyService {
     modelMapper.map(company, companyToEdit);
 
     return modelMapper.map(companyRepository.save(companyToEdit), DtoCompany.class);
-  }
-
-  @Transactional
-  public DtoCompany addEmployeeToCompany(Integer employeeId, Integer companyId){
-    Company company = companyRepository.findById(companyId)
-            .orElseThrow(() -> new EntityNotFoundException("Company", companyId));
-
-    Employee employee = employeeRepository.findById(employeeId)
-            .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
-
-    if (employee.getCompany() != null && !employee.getCompany().getId().equals(company.getId())) throw new RuntimeException("Employee already works for another company. Please remove them from the company first");
-    if ((employee.getCompany() != null ? employee.getCompany().getId() : 0) == company.getId()) throw new RuntimeException("Employee already works for this company");
-
-    employee.setCompany(company);
-    company.getEmployees().add(employee);
-
-    employeeRepository.save(employee);
-
-    return modelMapper.map(companyRepository.save(company), DtoCompany.class);
-  }
-
-  @Transactional
-  public DtoCompany removeEmployeeFromCompany(Integer employeeId, Integer companyId){
-    Company company = companyRepository.findById(companyId)
-            .orElseThrow(() -> new EntityNotFoundException("Company", companyId));
-
-    Employee employee = employeeRepository.findById(employeeId)
-            .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
-
-    if (employee.getCompany() == null || !Objects.equals(employee.getCompany().getId(), company.getId())) throw new InvalidInputException("Employee does not work for this company");
-
-    employee.getBuildings().forEach(building -> {
-      Employee newEmployee = employeeRepository.findEmployeeWithLeastBuildingsBelongingToCompany(companyId, employeeId);
-      if (newEmployee == null) throw new RuntimeException("The company doesn't have any free employees :(");
-      building.setEmployee(newEmployee);
-      employee.getBuildings().add(building);
-      company.getEmployees().remove(employee);
-
-      employeeRepository.save(employee);
-      buildingRepository.save(building);
-    });
-
-    return modelMapper.map(companyRepository.save(company), DtoCompany.class);
   }
 
   @Transactional
@@ -113,9 +75,6 @@ public class CompanyService {
       if (employee == null) throw new RuntimeException("The company doesn't have any free employees :(");
 
       building.setEmployee(employee);
-      employee.getBuildings().add(building);
-//TODO NO NEED TO RETURN COMPANY I THINK IDK
-      employeeRepository.save(employee);
       buildingRepository.save(building);
 
       return modelMapper.map(companyRepository.save(company), DtoCompany.class);
@@ -134,18 +93,12 @@ public class CompanyService {
             .orElseThrow(() -> new EntityNotFoundException("Company", companyId));
     Building building = buildingRepository.findById(buildingId)
             .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
-    if (building.getEmployee().getCompany() == null || !Objects.equals(building.getEmployee().getCompany().getId(), company.getId())) throw new InvalidInputException("Building is not assigned to this company");
+    if (building.getEmployee() == null || building.getEmployee().getCompany() == null || !Objects.equals(building.getEmployee().getCompany().getId(), company.getId())) throw new InvalidInputException("Building is not assigned to this company");
 
-    Employee employee = building.getEmployee();
-
-    employee.getBuildings().remove(building);
     building.setEmployee(null);
 
 
-    employeeRepository.save(employee);
-    buildingRepository.save(building);
-
-    return modelMapper.map(companyRepository.save(company), DtoCompany.class);
+    return modelMapper.map(buildingRepository.save(building), DtoCompany.class);
 
   }
 
@@ -155,7 +108,7 @@ public class CompanyService {
             .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
     Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
-    if (building.getEmployee().getCompany() == null || !Objects.equals(building.getEmployee().getCompany().getId(), employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
+    if (building.getEmployee() == null || building.getEmployee().getCompany() == null || !Objects.equals(building.getEmployee().getCompany().getId(), employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
     if (Objects.equals(building.getEmployee().getId(), employee.getId())) throw new InvalidInputException("This building is already assigned to this employee");
 
     building.setEmployee(employee);
@@ -166,23 +119,22 @@ public class CompanyService {
     return modelMapper.map(buildingRepository.save(building), DtoBuilding.class);
   }
 
-//TODO: combine revocation and assignment so there cant be a building with no employee
-  @Transactional
-  public DtoBuilding revokeBuildingFromEmployee(Integer buildingId, Integer employeeId){
-    Building building = buildingRepository.findById(buildingId)
-            .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
-    Employee employee = employeeRepository.findById(employeeId)
-            .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
-
-    if (building.getEmployee().getCompany() == null || !building.getEmployee().getCompany().getId().equals(employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
-    if(!building.getEmployee().getId().equals(employee.getId())) throw new InvalidInputException("This building is assigned to employee with id " + building.getEmployee().getId());
-    building.setEmployee(null);
-    employee.getBuildings().remove(building);
-    buildingRepository.save(building);
-    employeeRepository.save(employee);
-
-    return modelMapper.map(buildingRepository.save(building), DtoBuilding.class);
-  }
+//  @Transactional
+//  public DtoBuilding revokeBuildingFromEmployee(Integer buildingId, Integer employeeId){
+//    Building building = buildingRepository.findById(buildingId)
+//            .orElseThrow(() -> new EntityNotFoundException("Building", buildingId));
+//    Employee employee = employeeRepository.findById(employeeId)
+//            .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+//
+//    if (building.getEmployee().getCompany() == null || !building.getEmployee().getCompany().getId().equals(employee.getCompany().getId())) throw new InvalidInputException("Building is not assigned to this company");
+//    if(!building.getEmployee().getId().equals(employee.getId())) throw new InvalidInputException("This building is assigned to employee with id " + building.getEmployee().getId());
+//    building.setEmployee(null);
+//    employee.getBuildings().remove(building);
+//    buildingRepository.save(building);
+//    employeeRepository.save(employee);
+//
+//    return modelMapper.map(buildingRepository.save(building), DtoBuilding.class);
+//  }
 
   @Transactional
   public List<DtoCompany> getAllByOrderByIncomeDesc(){

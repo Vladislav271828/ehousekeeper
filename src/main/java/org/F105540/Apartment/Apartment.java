@@ -1,6 +1,8 @@
 package org.F105540.Apartment;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,8 +38,9 @@ public class Apartment {
             inverseJoinColumns = @JoinColumn(name = "resident_id"))
     private List<Resident> residents;
 
-    private Integer number;
-    private Integer floor;
+    private int number;
+    private int floor;
+    @Min(value = 0, message = "Area cannot be negative")
     private double area;
     @Column(name = "tax_is_paid")
     private boolean taxIsPaid;

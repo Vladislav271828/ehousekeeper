@@ -1,6 +1,5 @@
 package org.F105540.Resident;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -25,6 +24,7 @@ public class Resident {
     @ManyToMany(mappedBy = "residents", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     private List<Apartment> apartments;
     private String name;
+    @Min(value = 0, message = "Age cannot be negative")
     private int age;
     private boolean usesElevator;
 

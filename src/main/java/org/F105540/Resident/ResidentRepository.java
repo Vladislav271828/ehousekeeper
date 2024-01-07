@@ -1,6 +1,7 @@
 package org.F105540.Resident;
 
 import jakarta.transaction.Transactional;
+import org.F105540.Employee.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,8 +16,8 @@ public interface ResidentRepository extends JpaRepository<Resident, Integer> {
     @Query("SELECT COUNT(r) FROM Resident r " +
             "JOIN r.apartments a " +
             "WHERE a.id = :apartmentId " +
-            "AND (r.age > 7) " +
-            "AND (r.usesElevator = true)")
+            "AND r.age > 7 " +
+            "AND r.usesElevator = true")
     int findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(
             @Param("apartmentId") Integer apartmentId
     );
@@ -50,5 +51,6 @@ public interface ResidentRepository extends JpaRepository<Resident, Integer> {
     List<Resident> findResidentsInBuildingYoungerThan(
             @Param("buildingId") int buildingId,
             @Param("ageThreshold") int ageThreshold);
+
 
 }

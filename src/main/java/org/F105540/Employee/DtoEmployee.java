@@ -17,23 +17,24 @@ public class DtoEmployee {
 
     private Integer id;
 
-    private String name;
+    private String name = null;
 
     private DtoCompany company;
 
     private List<DtoBuilding> buildings;
 
-    private int salaryToBePaid;
+    private Integer salaryToBePaid = null;
     
-    private int salaryPaid;
+    private Integer salaryPaid = null;
+
+
 
     @Override
     public String toString() {
         return "DtoEmployee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                //", company id=" + company.getId() +
-                ", buildings=" + buildings.size() +
+                ", company=" + company +
                 ", salaryToBePaid=" + salaryToBePaid +
                 ", salaryPaid=" + salaryPaid +
                 '}';
