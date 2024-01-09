@@ -9,7 +9,6 @@ import org.F105540.Employee.EmployeeService;
 import org.F105540.Owner.DtoOwner;
 import org.F105540.Owner.OwnerService;
 import org.F105540.Resident.DtoResident;
-import org.F105540.Resident.ResidentRepository;
 import org.F105540.Resident.ResidentService;
 import org.F105540.company.CompanyService;
 import org.F105540.company.DtoCompany;
@@ -65,8 +64,8 @@ public class eHousekeeperApplication {
 
             System.out.println("Добавяне на сградите към компанията");
 
-            companyService.addBuildingToCompany(building.getId(), company.getId());
-            companyService.addBuildingToCompany(building2.getId(), company.getId());
+            building = companyService.addBuildingToCompany(building.getId(), company.getId());
+            building2 = companyService.addBuildingToCompany(building2.getId(), company.getId());
 
             System.out.println("Създаване на жители и добавяне към апартаментите");
 
@@ -96,7 +95,7 @@ public class eHousekeeperApplication {
             owner = ownerService.editOwner(owner.getId(), DtoOwner.builder().name("Novo ime na sobstvenik").build());
 
             System.out.println("смяна на служител на сградата (точка 5)");
-
+;
             building = companyService.assignBuildingToEmployee(building.getId(), employee2.getId());
 
             System.out.println("плащане на таксите на всички апартаменти (точка 7, 10)");
@@ -113,18 +112,17 @@ public class eHousekeeperApplication {
             System.out.println(employeeService.getEmployeesWithBuildingsMoreOrLessThanOfCompany(true, 1, company.getId()));
 
             System.out.println(residentService.getResidentsByNameAndBuilding("Johny", building.getId()));
-            System.out.println(residentService.getResidentsOlderOrYoungerThanInBuilding(true, 0, 0));
-            //THIS DOESNT WORK!?!??!?!qqw
-//            System.out.println("обобщени и подробни справки (точка 9)");
-//
-//            System.out.println(queryService.getNumberOfBuildingsOfEmployee(employee2.getId()));
-//            System.out.println(queryService.getListOfBuildingsOfEmployee(employee2.getId()));
-//
-//            System.out.println(queryService.getNumberOfApartmentsInBuilding(building.getId()));
-//            System.out.println(queryService.getListOfApartmentsInBuilding(building.getId()));
-//
-//            System.out.println(queryService.getNumberOfResidentsInBuilding(building.getId()));
-//            System.out.println(queryService.getListOfResidentsInBuilding(building.getId()));
+            System.out.println(residentService.getResidentsOlderOrYoungerThanInBuilding(true, 9, 1));
+            System.out.println("обобщени и подробни справки (точка 9)");
+
+            System.out.println(queryService.getNumberOfBuildingsOfEmployee(employee2.getId()));
+            System.out.println(queryService.getListOfBuildingsOfEmployee(employee2.getId()));
+
+            System.out.println(queryService.getNumberOfApartmentsInBuilding(building.getId()));
+            System.out.println(queryService.getListOfApartmentsInBuilding(building.getId()));
+
+            System.out.println(queryService.getNumberOfResidentsInBuilding(building.getId()));
+            System.out.println(queryService.getListOfResidentsInBuilding(building.getId()));
 
 
         };

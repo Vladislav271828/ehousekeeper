@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.F105540.Building.Building;
 import org.F105540.Building.BuildingRepository;
 import org.F105540.Building.DtoBuilding;
-import org.F105540.Employee.DtoEmployee;
 import org.F105540.Employee.Employee;
 import org.F105540.Employee.EmployeeRepository;
 import org.F105540.exceptions.EntityNotFoundException;
@@ -63,7 +62,7 @@ public class CompanyService {
   }
 
   @Transactional
-  public DtoCompany addBuildingToCompany(Integer buildingId, Integer companyId){
+  public DtoBuilding addBuildingToCompany(Integer buildingId, Integer companyId){
     Company company = companyRepository.findById(companyId)
             .orElseThrow(() -> new EntityNotFoundException("Company", companyId));
     Building building = buildingRepository.findById(buildingId)
@@ -75,9 +74,8 @@ public class CompanyService {
       if (employee == null) throw new RuntimeException("The company doesn't have any free employees :(");
 
       building.setEmployee(employee);
-      buildingRepository.save(building);
 
-      return modelMapper.map(companyRepository.save(company), DtoCompany.class);
+      return modelMapper.map(buildingRepository.save(building), DtoBuilding.class);
     }
 
     else {

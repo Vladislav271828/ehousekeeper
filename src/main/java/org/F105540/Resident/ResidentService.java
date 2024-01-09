@@ -55,7 +55,8 @@ public class ResidentService {
 
     @Transactional
     public List<DtoResident> getResidentsOlderOrYoungerThanInBuilding(boolean Older, int age, int buildingId){
-        if(Older) return residentRepository.findResidentsInBuildingOlderThan(age, buildingId).stream()
+        System.out.println();
+        if(Older) return residentRepository.findResidentsInBuildingOlderThan(buildingId, age).stream()
                 .map(resident -> modelMapper.map(resident, DtoResident.class))
                 .toList();
         else return residentRepository.findResidentsInBuildingYoungerThan(age, buildingId).stream()
