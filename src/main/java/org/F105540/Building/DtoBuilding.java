@@ -13,6 +13,7 @@ import org.F105540.Employee.Employee;
 import org.F105540.company.Company;
 import org.F105540.company.DtoCompany;
 
+import java.math.BigDecimal;
 import java.util.List;
 @Data
 @Builder
@@ -30,11 +31,11 @@ public class DtoBuilding {
     private Integer numberOfApartments = null;
 
     private Double area = null;
-    private Double expenses = null;
-    private Double expensesPaid = null;
-    private Double taxPerArea = null;
-    private Double taxPerElevatorPerson = null;
-    private Double taxForPet = null;
+    private BigDecimal expenses = null;
+    private BigDecimal expensesPaid = null;
+    private BigDecimal taxPerArea = null;
+    private BigDecimal taxPerElevatorPerson = null;
+    private BigDecimal taxForPet = null;
     private String commonParts = null;
 
     @Override

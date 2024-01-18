@@ -16,6 +16,7 @@ import org.F105540.paymentLoogger.PaymentLogger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -141,11 +142,11 @@ public class ApartmentService {
         Apartment apartment = apartmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
         if (apartment.isTaxIsPaid()) throw new InvalidInputException("Tax is already paid for this apartment");
-        double tax = calculateTax(id);
+        BigDecimal tax = calculateTax(id);
         //insert function for transferring money
         apartment.setTaxIsPaid(true);
         Company company = apartment.getBuilding().getEmployee().getCompany();
-        company.setIncome(company.getIncome() + tax);
+        company.setIncome(company.getIncome().add(tax));
         companyRepository.save(company);
         PaymentLogger.logPaymentDetails(apartment, tax);
         return modelMapper.map(apartmentRepository.save(apartment), DtoApartment.class);

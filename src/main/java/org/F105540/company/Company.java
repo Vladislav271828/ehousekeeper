@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.F105540.Building.Building;
 import org.F105540.Employee.Employee;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -29,12 +30,12 @@ public class Company {
     private String name;
 
     @Column(name = "income")
-    private double income;
+    private BigDecimal income;
 
     @Column(name = "expenses_to_pay")
-    private double expenses;
+    private BigDecimal expenses;
 
     @Column(name = "expenses_paid")
-    private double expensesPaid;
+    private BigDecimal expensesPaid;
 
 }
