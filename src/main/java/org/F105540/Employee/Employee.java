@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.F105540.Building.Building;
 import org.F105540.company.Company;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -35,10 +36,10 @@ public class Employee {
 
 
     @Column(name = "expenses")
-    private int salaryToBePaid;
+    private BigDecimal salaryToBePaid;
 
     @Column(name = "expenses_paid")
-    private int salaryPaid;
+    private BigDecimal salaryPaid;
 
     @Override
     public String toString() {

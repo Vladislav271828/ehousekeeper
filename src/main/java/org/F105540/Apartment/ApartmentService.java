@@ -16,6 +16,7 @@ import org.F105540.paymentLoogger.PaymentLogger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -126,14 +127,33 @@ public class ApartmentService {
         apartmentRepository.deleteById(id);
     }
 
-    @Transactional
-    public double calculateTax(int id){
+//    @Transactional
+//    public double calculateTax(int id){
+//        Apartment apartment = apartmentRepository.findById(id)
+//                .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
+//        double tax = (apartment.getArea() * apartment.getBuilding().getTaxPerArea());
+//        tax = tax + residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
+//        if (apartment.isHasPet()) tax = tax + apartment.getBuilding().getTaxForPet();
+//        return tax;
+//    }
+
+    public BigDecimal calculateTax(int id) {
         Apartment apartment = apartmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
-        double tax = (apartment.getArea() * apartment.getBuilding().getTaxPerArea());
-        tax = tax + residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
-        if (apartment.isHasPet()) tax = tax + apartment.getBuilding().getTaxForPet();
-        return tax;
+
+        BigDecimal areaTax = BigDecimal.valueOf(apartment.getArea()).multiply(apartment.getBuilding().getTaxPerArea());
+
+        BigDecimal elevatorPersonTax = BigDecimal.valueOf(residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()))
+                .multiply(apartment.getBuilding().getTaxPerElevatorPerson());
+
+        BigDecimal totalTax = areaTax.add(elevatorPersonTax);
+
+        if (apartment.isHasPet()) {
+            BigDecimal petTax = apartment.getBuilding().getTaxForPet();
+            totalTax = totalTax.add(petTax);
+        }
+
+        return totalTax;
     }
 
     @Transactional
@@ -141,11 +161,11 @@ public class ApartmentService {
         Apartment apartment = apartmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
         if (apartment.isTaxIsPaid()) throw new InvalidInputException("Tax is already paid for this apartment");
-        double tax = calculateTax(id);
+        BigDecimal tax = calculateTax(id);
         //insert function for transferring money
         apartment.setTaxIsPaid(true);
         Company company = apartment.getBuilding().getEmployee().getCompany();
-        company.setIncome(company.getIncome() + tax);
+        company.setIncome(company.getIncome().add(tax));
         companyRepository.save(company);
         PaymentLogger.logPaymentDetails(apartment, tax);
         return modelMapper.map(apartmentRepository.save(apartment), DtoApartment.class);

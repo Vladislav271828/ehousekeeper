@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +14,7 @@ public class PaymentLogger {
 
     private static final String FILE_PATH = "payment_log.txt";
 
-    public static  void logPaymentDetails(Apartment apartment, double paymentAmount) {
+    public static  void logPaymentDetails(Apartment apartment, BigDecimal paymentAmount) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             writer.write("Name of company: " + apartment.getBuilding().getEmployee().getCompany().getName() + ", ");
             writer.write("Name of employee: " + apartment.getBuilding().getEmployee().getName() + ", ");

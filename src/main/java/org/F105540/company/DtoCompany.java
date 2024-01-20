@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.F105540.Building.DtoBuilding;
 import org.F105540.Employee.DtoEmployee;
 
+import java.math.BigDecimal;
 import java.util.List;
 @Data
 @Builder
@@ -20,11 +21,11 @@ public class DtoCompany {
 
     private List<DtoEmployee> employees;
 
-    private Double income = null;
+    private BigDecimal income = null;
 
-    private Double expenses = null;
+    private BigDecimal expenses = null;
 
-    private Double expensesPaid = null;
+    private BigDecimal expensesPaid = null;
 
     @Override
     public String toString() {

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.F105540.Apartment.Apartment;
 import org.F105540.Employee.Employee;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -44,18 +45,18 @@ public class Building {
     @Min(value = 0, message = "Area cannot be negative")
     private double area;
     @Column(name = "expenses")
-    private double expenses;
+    private BigDecimal expenses;
     @Column(name = "expenses_paid")
-    private double expensesPaid;
+    private BigDecimal expensesPaid;
     @Column(name = "tax_per_area")
     @Min(value = 0, message = "Tax per area cannot be negative")
-    private double taxPerArea;
+    private BigDecimal taxPerArea;
     @Column(name = "tax_per_elevator_person")
     @Min(value = 0, message = "Tax per elevator person cannot be negative")
-    private double taxPerElevatorPerson;
+    private BigDecimal taxPerElevatorPerson;
     @Column(name = "tax_for_pet")
     @Min(value = 0, message = "Tax per pet cannot be negative")
-    private double taxForPet;
+    private BigDecimal taxForPet;
     @Column(name = "common_parts")
     private String commonParts;
 

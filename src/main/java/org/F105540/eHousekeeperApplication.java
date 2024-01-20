@@ -17,6 +17,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.math.BigDecimal;
+
 @SpringBootApplication
 public class eHousekeeperApplication {
     public static void main(String[] args) {
@@ -49,8 +52,8 @@ public class eHousekeeperApplication {
 
             System.out.println("Създаване на сгради, апартаменти и собственик");
 
-            DtoBuilding building = buildingService.createBuilding(DtoBuilding.builder().address("ulitsa nomer edno").numberOfFloors(21).taxForPet(10.0).taxPerArea(1.0).taxPerElevatorPerson(100.0).build());
-            DtoBuilding building2 = buildingService.createBuilding(DtoBuilding.builder().address("ulitsa nomer dwe").numberOfFloors(99).taxForPet(2.0).taxPerArea(3.0).taxPerElevatorPerson(5.0).build());
+            DtoBuilding building = buildingService.createBuilding(DtoBuilding.builder().address("ulitsa nomer edno").numberOfFloors(21).taxForPet(BigDecimal.valueOf(10.0)).taxPerArea((BigDecimal.valueOf(1.0))).taxPerElevatorPerson((BigDecimal.valueOf(10.0))).build());
+            DtoBuilding building2 = buildingService.createBuilding(DtoBuilding.builder().address("ulitsa nomer dwe").numberOfFloors(99).taxForPet(BigDecimal.valueOf(2.0)).taxPerArea(BigDecimal.valueOf(3.0)).taxPerElevatorPerson(BigDecimal.valueOf(5.0)).build());
             DtoApartment apartment = apartmentService.createApartmentInBuilding(DtoApartment.builder().area(1000.0).hasPet(true).number(1).build(), building.getId());
             DtoApartment apartment2 = apartmentService.createApartmentInBuilding(DtoApartment.builder().area(10000.0).hasPet(false).number(2).build(), building.getId());
             DtoApartment apartment3 = apartmentService.createApartmentInBuilding(DtoApartment.builder().area(100000.0).hasPet(false).number(1).build(), building2.getId());
@@ -89,13 +92,12 @@ public class eHousekeeperApplication {
 
             company = companyService.editCompany(company.getId(), DtoCompany.builder().name("Novo ime na kompaniq").build());
             employee = employeeService.editEmployee(employee.getId(), DtoEmployee.builder().name("Novo ime na slujitel").build());
-            building = buildingService.editBuilding(building.getId(), DtoBuilding.builder().address("Nov adress").taxPerArea(1.0).taxForPet(1.0).taxPerElevatorPerson(1.0).build());
+            building = buildingService.editBuilding(building.getId(), DtoBuilding.builder().address("Nov adress").taxPerArea(BigDecimal.valueOf(1)).taxForPet(BigDecimal.valueOf(1)).taxPerElevatorPerson(BigDecimal.valueOf(1)).build());
             apartment = apartmentService.editApartment(apartment.getId(), DtoApartment.builder().number(33).build());
             resident = residentService.editResident(resident.getId(), DtoResident.builder().name("Novo ime na jitel").build());
             owner = ownerService.editOwner(owner.getId(), DtoOwner.builder().name("Novo ime na sobstvenik").build());
 
             System.out.println("смяна на служител на сградата (точка 5)");
-;
             building = companyService.assignBuildingToEmployee(building.getId(), employee2.getId());
 
             System.out.println("плащане на таксите на всички апартаменти (точка 7, 10)");

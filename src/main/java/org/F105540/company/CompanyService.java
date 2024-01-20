@@ -11,6 +11,7 @@ import org.F105540.exceptions.InvalidInputException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +47,7 @@ public class CompanyService {
   @Transactional
   public DtoCompany createCompany(DtoCompany company) {
     company.setEmployees(emptyList());
+    if(company.getIncome() == null) company.setIncome(BigDecimal.ZERO);
     return modelMapper.map(companyRepository.save(modelMapper.map(company, Company.class)), DtoCompany.class);
   }
 

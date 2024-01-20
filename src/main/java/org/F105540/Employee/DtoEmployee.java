@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.F105540.Building.DtoBuilding;
 import org.F105540.company.DtoCompany;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -23,9 +24,9 @@ public class DtoEmployee {
 
     private List<DtoBuilding> buildings;
 
-    private Integer salaryToBePaid = null;
+    private BigDecimal salaryToBePaid = null;
     
-    private Integer salaryPaid = null;
+    private BigDecimal salaryPaid = null;
 
 
 
