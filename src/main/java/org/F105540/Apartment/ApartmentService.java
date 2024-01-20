@@ -127,14 +127,33 @@ public class ApartmentService {
         apartmentRepository.deleteById(id);
     }
 
-    @Transactional
-    public double calculateTax(int id){
+//    @Transactional
+//    public double calculateTax(int id){
+//        Apartment apartment = apartmentRepository.findById(id)
+//                .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
+//        double tax = (apartment.getArea() * apartment.getBuilding().getTaxPerArea());
+//        tax = tax + residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
+//        if (apartment.isHasPet()) tax = tax + apartment.getBuilding().getTaxForPet();
+//        return tax;
+//    }
+
+    public BigDecimal calculateTax(int id) {
         Apartment apartment = apartmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Apartment", id));
-        double tax = (apartment.getArea() * apartment.getBuilding().getTaxPerArea());
-        tax = tax + residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()) * apartment.getBuilding().getTaxPerElevatorPerson();
-        if (apartment.isHasPet()) tax = tax + apartment.getBuilding().getTaxForPet();
-        return tax;
+
+        BigDecimal areaTax = BigDecimal.valueOf(apartment.getArea()).multiply(apartment.getBuilding().getTaxPerArea());
+
+        BigDecimal elevatorPersonTax = BigDecimal.valueOf(residentRepository.findNumberOfResidentsInApartmentOlderThanSevenAndUsingElevator(apartment.getId()))
+                .multiply(apartment.getBuilding().getTaxPerElevatorPerson());
+
+        BigDecimal totalTax = areaTax.add(elevatorPersonTax);
+
+        if (apartment.isHasPet()) {
+            BigDecimal petTax = apartment.getBuilding().getTaxForPet();
+            totalTax = totalTax.add(petTax);
+        }
+
+        return totalTax;
     }
 
     @Transactional
