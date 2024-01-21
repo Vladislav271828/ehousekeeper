@@ -1,7 +1,8 @@
 package org.F105540.Owner;
 
 import jakarta.transaction.Transactional;
-import org.F105540.Apartment.DtoApartment;
+import org.F105540.Apartment.Apartment;
+import org.F105540.Apartment.ApartmentRepository;
 import org.F105540.exceptions.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,13 @@ import static java.util.Collections.emptyList;
 public class OwnerService {
 
   private final OwnerRepository ownerRepository;
+  private final ApartmentRepository apartmentRepository;
   private final ModelMapper modelMapper = new ModelMapper();
 
 
-  public OwnerService(OwnerRepository ownerRepository) {
+  public OwnerService(OwnerRepository ownerRepository, ApartmentRepository apartmentRepository) {
     this.ownerRepository = ownerRepository;
+    this.apartmentRepository = apartmentRepository;
   }
 
   @Transactional
@@ -56,8 +59,13 @@ public class OwnerService {
 
   @Transactional
   public void deleteOwner(int id) {
-    ownerRepository.findById(id)
+
+    Owner owner = ownerRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Owner", id));
+    if (owner.getApartments() != null) for (Apartment apartment : owner.getApartments()) {
+      apartment.setOwner(null);
+      apartmentRepository.save(apartment);
+    };
     ownerRepository.deleteById(id);
   }
 

@@ -126,6 +126,17 @@ public class eHousekeeperApplication {
             System.out.println(queryService.getNumberOfResidentsInBuilding(building.getId()));
             System.out.println(queryService.getListOfResidentsInBuilding(building.getId()));
 
+            System.out.println("Изтриване");
+
+            //employeeService.deleteEmployee(2);
+            //companyService.deleteCompany(company.getId());
+            //buildingService.deleteBuilding(building.getId());
+            //apartmentService.deleteApartment(1);
+            //ownerService.deleteOwner(2);
+            //residentService.deleteResident(resident.getId());
+
+
+
 
         };
     }

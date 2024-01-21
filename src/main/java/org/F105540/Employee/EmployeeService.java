@@ -126,8 +126,9 @@ public class EmployeeService {
 
   @Transactional
   public void deleteEmployee(int id) {
-    employeeRepository.findById(id)
+    Employee employee = employeeRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Employee", id));
+    if (employee.getCompany() != null)  removeEmployeeFromCompany(id, employee.getCompany().getId());
     employeeRepository.deleteById(id);
   }
 

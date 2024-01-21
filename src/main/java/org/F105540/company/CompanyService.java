@@ -3,6 +3,7 @@ package org.F105540.company;
 import jakarta.transaction.Transactional;
 import org.F105540.Building.Building;
 import org.F105540.Building.BuildingRepository;
+import org.F105540.Building.BuildingService;
 import org.F105540.Building.DtoBuilding;
 import org.F105540.Employee.Employee;
 import org.F105540.Employee.EmployeeRepository;
@@ -147,8 +148,21 @@ public class CompanyService {
 
   @Transactional
   public void deleteCompany(int id) {
-    companyRepository.findById(id)
+
+    Company company = companyRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Company", id));
+    if (company.getEmployees() != null) for (Employee employee : company.getEmployees()) {
+      Employee realEmployee = employeeRepository.findById(employee.getId())
+              .orElseThrow(() -> new EntityNotFoundException("Employee", id));
+      if (employee.getBuildings() != null) for (Building building : employee.getBuildings()) {
+        Building realBuilding = buildingRepository.findById(building.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Building", id));
+        realBuilding.setEmployee(null);
+        buildingRepository.save(realBuilding);
+      }
+      realEmployee.setCompany(null);
+      employeeRepository.save(realEmployee);
+    }
     companyRepository.deleteById(id);
   }
 }

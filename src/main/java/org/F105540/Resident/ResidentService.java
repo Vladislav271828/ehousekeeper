@@ -2,6 +2,8 @@ package org.F105540.Resident;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.F105540.Apartment.Apartment;
+import org.F105540.Apartment.ApartmentRepository;
 import org.F105540.exceptions.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 public class ResidentService {
 
     private final ResidentRepository residentRepository;
+    private final ApartmentRepository apartmentRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Transactional
@@ -67,8 +70,13 @@ public class ResidentService {
 
     @Transactional
     public void deleteResident(int id) {
-        residentRepository.findById(id)
+        Resident resident = residentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Resident", id));
+
+        if(resident.getApartments() != null) for (Apartment apartment : resident.getApartments()) {
+            apartment.getResidents().remove(resident);
+            apartmentRepository.save(apartment);
+        }
         residentRepository.deleteById(id);
     }
 
