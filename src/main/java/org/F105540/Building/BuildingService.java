@@ -1,13 +1,12 @@
 package org.F105540.Building;
 
 import jakarta.transaction.Transactional;
-import org.F105540.Apartment.Apartment;
 import org.F105540.Apartment.ApartmentRepository;
-import org.F105540.Apartment.DtoApartment;
 import org.F105540.exceptions.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -41,6 +40,8 @@ public class BuildingService {
   public DtoBuilding createBuilding(DtoBuilding building) {
     building.setApartments(emptyList());
     building.setEmployee(null);
+    if (building.getExpenses() == null) building.setExpenses(BigDecimal.ZERO);
+    if (building.getExpensesPaid() == null) building.setExpensesPaid(BigDecimal.ZERO);
     return  modelMapper.map(buildingRepository.save(modelMapper.map(building, Building.class)), DtoBuilding.class);
   }
 

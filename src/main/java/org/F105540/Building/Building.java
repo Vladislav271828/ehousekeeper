@@ -37,10 +37,10 @@ public class Building {
     private String address;
     @Column(name = "num_of_floors")
     @Min(value = 0, message = "Number of floors cannot be negative")
-    private Integer numberOfFloors;
+    private int numberOfFloors;
     @Column(name = "num_of_apartments")
     @Min(value = 0, message = "Number of apartments cannot be negative")
-    private Integer numberOfApartments;
+    private int numberOfApartments;
     @Column(name = "area")
     @Min(value = 0, message = "Area cannot be negative")
     private double area;

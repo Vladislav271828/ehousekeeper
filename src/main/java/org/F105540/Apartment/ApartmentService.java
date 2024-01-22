@@ -57,6 +57,8 @@ public class ApartmentService {
         apartment.setResidents(emptyList());
         Apartment newApartment = modelMapper.map(apartment, Apartment.class);
         newApartment.setBuilding(building);
+        building.setNumberOfApartments(building.getNumberOfApartments() + 1);
+        buildingRepository.save(building);
 
         return modelMapper.map(apartmentRepository.save(newApartment), DtoApartment.class);
     }

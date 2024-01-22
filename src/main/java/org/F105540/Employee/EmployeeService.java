@@ -9,6 +9,7 @@ import org.F105540.exceptions.InvalidInputException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +46,8 @@ public class EmployeeService {
   public DtoEmployee createEmployee(DtoEmployee employee) {
     employee.setCompany(null);
     employee.setBuildings(emptyList());
+    if (employee.getSalaryPaid() == null) employee.setSalaryPaid(BigDecimal.ZERO);
+    if (employee.getSalaryToBePaid() == null) employee.setSalaryToBePaid(BigDecimal.ZERO);
     return modelMapper.map(employeeRepository.save(modelMapper.map(employee, Employee.class)), DtoEmployee.class);
   }
 

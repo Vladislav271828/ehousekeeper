@@ -35,7 +35,7 @@ public class Employee {
     private List<Building> buildings;
 
 
-    @Column(name = "expenses")
+    @Column(name = "salary_to_be_paid")
     private BigDecimal salaryToBePaid;
 
     @Column(name = "expenses_paid")

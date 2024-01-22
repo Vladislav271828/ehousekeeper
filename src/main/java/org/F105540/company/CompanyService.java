@@ -48,6 +48,8 @@ public class CompanyService {
   @Transactional
   public DtoCompany createCompany(DtoCompany company) {
     company.setEmployees(emptyList());
+    if (company.getExpenses() == null) company.setExpenses(BigDecimal.ZERO);
+    if (company.getExpensesPaid() == null) company.setExpensesPaid(BigDecimal.ZERO);
     if(company.getIncome() == null) company.setIncome(BigDecimal.ZERO);
     return modelMapper.map(companyRepository.save(modelMapper.map(company, Company.class)), DtoCompany.class);
   }
