@@ -45,7 +45,7 @@ public class eHousekeeperApplication {
             DtoCompany company = DtoCompany.builder().name("Kompaniq").build();
             company = companyService.createCompany(company);
             DtoCompany company2 = DtoCompany.builder().name("Kompaniq dwe").build();
-            company2 = companyService.createCompany(company);
+            company2 = companyService.createCompany(company2);
             employee = employeeService.addEmployeeToCompany(employee.getId(), company.getId());
             employee2 = employeeService.addEmployeeToCompany(employee2.getId(), company.getId());
             employee3 = employeeService.addEmployeeToCompany(employee3.getId(), company.getId());
@@ -98,7 +98,7 @@ public class eHousekeeperApplication {
             owner = ownerService.editOwner(owner.getId(), DtoOwner.builder().name("Novo ime na sobstvenik").build());
 
             System.out.println("смяна на служител на сградата (точка 5)");
-            building = companyService.assignBuildingToEmployee(building.getId(), employee2.getId());
+            building = companyService.assignBuildingToEmployee(building.getId(), employee3.getId());
 
             System.out.println("плащане на таксите на всички апартаменти (точка 7, 10)");
 
@@ -108,7 +108,7 @@ public class eHousekeeperApplication {
 
             System.out.println("филтриране и сортиране на компании, служители, жители в сграда(точка 8)");
 
-            companyService.getAllByOrderByIncomeDesc();
+            System.out.println(companyService.getAllByOrderByIncomeDesc());
 
             System.out.println(employeeService.getAllByName("Ivan", company.getId()));
             System.out.println(employeeService.getEmployeesWithBuildingsMoreOrLessThanOfCompany(true, 1, company.getId()));
